@@ -1,0 +1,113 @@
+ <!-- ax-w-full max-h-full -->
+ <p-toast class = "font-extralight text-sm"></p-toast>
+ <p-confirmDialog
+     [style]="{width: '30vw'}"
+     [baseZIndex]="10000"
+     acceptLabel="Si">
+ </p-confirmDialog>
+ <div class="surface-card p-4 shadow-2 border-round h-full">
+     <div class="text-3xl font-medium text-900 mb-2 text-cyan-500">Población</div>
+     <div style="height: 100%" class="border-2 border-dashed surface-border p-3">
+         <div class="flex justify-content-between flex-wrap">
+             <div class="flex flex-wrap card-container mb-2" >
+                 <div class="flex align-items-center mr-5">
+                     <p-radioButton class="text-sm" name="groupname" value="E"  [(ngModel)]="selectedQuery" (onClick)="choseOption($event)" label="Empleadores" [disabled]="showSpinner"></p-radioButton>
+                     <p-radioButton class="text-sm ml-3" name="groupname" value="T"  [(ngModel)]="selectedQuery" (onClick)="choseOption($event)" label="Trabajadores" [disabled]="showSpinner"></p-radioButton>
+                     <p-radioButton class="text-sm ml-3" name="groupname" value="B"  [(ngModel)]="selectedQuery" (onClick)="choseOption($event)" label="Beneficiarios" [disabled]="showSpinner"></p-radioButton>
+                     <p-radioButton class="text-sm ml-3" name="groupname" value="C"  [(ngModel)]="selectedQuery" (onClick)="choseOption($event)" label="Cónyuges" [disabled]="showSpinner"></p-radioButton>
+                     `
+                 </div>
+
+                 <div class="flex flex-column justify-content-center">
+                     <label class="mb-1 text-sm">Estado</label>
+                     <p-multiSelect class="text-sm" [options]="status" [(ngModel)]="selectedStatus" defaultLabel="Seleccione estado" optionLabel="name" optionValue="value" display="chip" [disabled]="showSpinner"></p-multiSelect>
+                 </div>
+                 <div class="flex flex-column justify-content-center ml-3">
+                     <label class="mb-1 text-sm">Rango de fechas</label>
+                     <p-calendar class="max-w-ful" [(ngModel)]="dateRange" dateFormat="dd/mm/yy" placeholder="Fecha inicial - Fecha final" selectionMode="range" [disabled]="showSpinner"></p-calendar>
+                 </div>
+                 <div *ngIf="selectedQuery === 'B'" class="flex flex-column justify-content-center ml-3">
+                     <label class="mb-1 text-sm">Parentesco</label>
+                     <p-multiSelect [options]="relationship" [(ngModel)]="selectedRelationship" defaultLabel="Seleccione parentesco" optionLabel="name" optionValue="value" display="chip" [disabled]="showSpinner"></p-multiSelect>
+                 </div>
+             </div>
+             <div class="flex align-items-center justify-content-center">
+                 <p-progressSpinner *ngIf="showSpinner" [style]="{width: '30px', height: '30px'}" styleClass="custom-spinner" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s" class = "mr-3" ></p-progressSpinner>
+                 <button type="button" label="Enviar" pButton pRipple  (click)="validate()" class="p-button-sm mr-2" pTooltip="Consultar información de {{this.reportTitle}}" tooltipPosition="left" [disabled]="showSpinner"></button>
+             </div>
+         </div>
+         <p-table #dt *ngIf="results"
+             [columns]="cols"
+             [value]="results"
+             responsiveLayout="scroll"
+             [paginator]="true"
+             currentPageReportTemplate = "Mostrando {first} a {last} de {totalRecords} entradas"
+             [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]"
+             [totalRecords]="totalRecords"
+             styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped p-datatable-customers"
+             class="font-extralight m-auto text-xs"
+             [scrollable]="true"
+             scrollHeight="300px"
+             [resizableColumns]="true"
+             [autoLayout]="true"
+
+             >
+             <ng-template pTemplate="caption">
+                 <div class="flex justify-content-between flex-wrap card-container purple-container">
+                     <div class="flex align-items-center justify-content-center m-2">
+                         <span class = "font-extralight text-xl font-italic">{{reportTitle}}</span>
+                     </div>
+                     <div class="flex align-items-center justify-content-center">
+                         <span class="p-input-icon-left p-ml-auto">
+                             <i class="pi pi-search"></i>
+                             <!-- <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Buscar..." /> -->
+
+                             <input pInputText type="text"  placeholder="Buscar..." />
+                         </span>
+                     </div>
+                 </div>
+             </ng-template>
+             <ng-template pTemplate="header" let-columns>
+                 <tr>
+                     <th *ngFor="let col of columns" [ngStyle]="{color:'var(--red-400)'}" class="font-extralight text-xs font-bold" style="text-align:center" >
+                         {{col.header}}
+                     </th>
+                     <!-- <th style="text-align:center;" [ngStyle]="{color:'var(--green-400)'}" class="font-title-column">Acciones</th> -->
+                 </tr>
+             </ng-template>
+             <ng-template pTemplate="body" let-rowData let-columns="columns">
+                 <tr class="p-selectable-row font-table">
+                     <td *ngFor="let col of columns">
+                             <span *ngIf="col.header != 'Estado'">
+                                 {{rowData[col.field]}}
+                             </span>
+                             <div *ngIf="col.header ===  'Estado' && rowData[col.field] === 'ACTIVO'" class="active-state custom-div-status">
+                                 {{rowData[col.field]}}
+                             </div>
+                             <div *ngIf="col.header ===  'Estado' && rowData[col.field] === 'INACTIVO'" class="idle-state custom-div-status">
+                                 {{rowData[col.field]}}
+                             </div>
+                             <div *ngIf="col.header ===  'Estado' && rowData[col.field] === 'DIFUNTO'" class="dead-affiliate custom-div-status">
+                                 {{rowData[col.field]}}
+                             </div>
+                     </td>
+                 </tr>
+             </ng-template>
+             <ng-template let-item pTemplate="paginatordropdownitem">
+                 {{item.value}} -por página
+             </ng-template>
+             <ng-template pTemplate="summary">
+                 <div class="flex justify-content-between flex-wrap" *ngIf="results?.length">
+                     <div class="flex align-items-center justify-content-center">
+                         <span class = "font-extralight text-sm">Total registros en esta vista: {{results.length | number}} </span>
+                     </div>
+                     <div class="flex align-items-center justify-content-center">
+                         <button type="button" label="Exportar" pButton pRipple  (click)="saveAsCsvFile()" class="p-button-sm"  pTooltip="Exporta información de {{this.reportTitle}}" tooltipPosition="left" [disabled]="showSpinner"></button>
+                     </div>
+                 </div>
+             </ng-template>
+         </p-table>
+         <!-- End variable content -->
+     </div>
+ </div>
+

@@ -1,0 +1,50 @@
+ @font-face {
+     font-family: Monserrat-black;
+     src: url(./assets/fonts/moserrat/Montserrat-Regular.ttf) format("truetype");
+ }
+ @font-face {
+     font-family: Montserrat-ExtraLight;
+     src: url(./assets/fonts/moserrat/Montserrat-ExtraLight.ttf) format("truetype");
+  }
+ body {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     font-family: Monserrat-black;
+ }
+ html {
+     margin: 5rem;
+     background-color: #EFF3F8;
+ }
+
+ .font-extralight {
+     font-family: Montserrat-ExtraLight;
+  }
+
+ .font-table {
+     font-family: Montserrat-ExtraLight;
+     font-weight: bold;
+     font-size: 10px;
+ }
+ .custom-div-status{
+     height: 1.1rem;
+     border-radius: 4px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
+ .active-state {
+     background-color: #C6EFCE;
+     color: #006153;
+     border-color: #c8e6c9;
+ }
+ .idle-state{
+     background-color: #FFCDD2;
+     color: #CF2D06;
+     border-color:  #FFC7DE;
+ }
+ .dead-affiliate {
+     background-color: #FEEDAF;
+     color: #935F49;
+     border-color: #FEEDAF;
+ }
